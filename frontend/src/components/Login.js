@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, ToggleButton, ToggleButtonGroup, Row, Col, Form } from 'react-bootstrap';
+import { Alert, Button, ToggleButton, ToggleButtonGroup, Row, Col, Form } from 'react-bootstrap';
 
 export default class Login extends React.Component {
 
@@ -9,6 +9,7 @@ export default class Login extends React.Component {
       loginMode: "Login",
       email: "",
       password: "",
+      error: null,
     };
 
     this.toggleChange = this.toggleChange.bind(this);
@@ -30,33 +31,76 @@ export default class Login extends React.Component {
   }
 
   submitForm(e) {
-    console.log("submitting form", this.state);
+    e.preventDefault();
 
-    var url = "/api/user/login";
+    this.setState({ error: null });
+
+    var url = "/login";
     const { loginMode, email, password } = this.state;
 
-    if (loginMode !== 'login') {
+    if (loginMode !== 'Login') {
       url = "/api/user/create";
     }
 
-    console.log(JSON.stringify({ email, password }));
 
-    fetch(url, {
-      method: 'POST',
-      body: JSON.stringify({ email, password }),
-    })
-    .then(res => res.json())
-    .then((result) => {
-      if (result.error) {
-
-      } else {
-        // continue to app
-
-        if (this.props.onLoginComplete && typeof this.props.onLoginComplete === "function") {
-          this.props.onLoginComplete(result);
+    if (loginMode === "Login") {
+      fetch(url, {
+        method: 'POST',
+        body: JSON.stringify({ email, password }),
+        headers: {
+          "Content-Type": "application/json",
+          "authorization": "",
+        },
+      })
+      .then((result) => {
+        const auth = result.headers.get("authorization");
+        if (result.status === 403) {
+          this.setState({error: {
+           variant: "warning",
+           text: "Invalid login/password. Please try again.",
+          }});
+        } else if (auth) {
+          // continue to app
+          if (this.props.onLoginComplete && typeof this.props.onLoginComplete === "function") {
+            this.props.onLoginComplete(auth);
+          }
+        } else {
+          // Should never come here. But just in case.
+          this.setState({error: {
+           variant: "warning",
+           text: "Something went wrong. Please try again later.",
+          }});
         }
-      }
-    });
+      });
+
+    } else {
+      fetch(url, {
+        method: 'POST',
+        body: JSON.stringify({ email, password }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+      .then(res => res.json())
+      .then((result) => {
+        console.log(result);
+
+        if (result.error.length === 0) {
+          this.setState({error: {
+           variant: "info",
+           text: "Account created successfully",
+          }});
+        } else {
+          this.setState({
+            error: {
+              variant: "warning",
+              text: result.error.join(", "),
+            }
+          });
+        }
+      });
+
+    }
   }
 
 
@@ -105,7 +149,12 @@ export default class Login extends React.Component {
           <br /><br />
           <Row>
             <Col>
-
+              {
+                this.state.error &&
+                <Alert variant={this.state.error.variant} show={this.state.error != null}>
+                  {this.state.error.text}
+                </Alert>
+              }
             </Col>
           </Row>
 

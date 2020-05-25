@@ -1,9 +1,8 @@
 package com.kazz.self.weather.dao;
 
-import java.util.List;
+import java.util.Set;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -17,7 +16,9 @@ public class User {
 
     private String email;
     private String password;
-    private List<String> cities;
+    private Set<String> cities;
+    
+    private String currentCity;
 
     public User() {
     }
