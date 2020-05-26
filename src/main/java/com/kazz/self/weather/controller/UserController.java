@@ -53,6 +53,9 @@ public class UserController {
                 cities = new HashSet<String>();
             }
             cities.add(city.getCity());
+            if (city.isCurrentCity()) {
+                user.get().setCurrentCity(city.getCity());
+            }
             user.get().setCities(cities);;
             userRepository.save(user.get());
         }
@@ -61,10 +64,33 @@ public class UserController {
         return user.orElse(null);
     }
     
+    @PostMapping("/removeCity")
+    @ResponseBody
+    public User removeCity(@RequestBody City city, Principal principal) {
+        Optional<User> user = userRepository.findByEmail(principal.getName());
+
+        if (user.isPresent()) {
+            Set<String> cities = user.get().getCities();
+            if (cities != null && cities.contains(city.getCity())) {
+                if (user.get().getCurrentCity().equalsIgnoreCase(city.getCity())) {
+                    user.get().setCurrentCity(null);
+                }
+                cities.remove(city.getCity());
+            }
+            user.get().setCities(cities);;
+            userRepository.save(user.get());
+        }
+        
+        
+        return user.orElse(null);
+    }
+    
+    
     @Getter
     @Setter
     public static class City {
         private String city;
+        private boolean currentCity;
     }
 
     @PostMapping("/create")

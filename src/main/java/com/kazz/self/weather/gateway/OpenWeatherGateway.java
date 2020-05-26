@@ -11,14 +11,16 @@ public class OpenWeatherGateway {
     
     private String API_KEY = "680b618bb665de1ba0771c7fe75402c0";
     
-    private String FORECAST_URL = "http://api.openweathermap.org/data/2.5/forecast/daily?mode=json&appid={api_key}&cnt=7&q=";
+    private String FORECAST_URL = "http://api.openweathermap.org/data/2.5/forecast?units=imperial&mode=json&appid={api_key}&cnt=7&q=";
 
-    private String CURRENT_WEATHER_URL = "http://api.openweathermap.org/data/2.5/weather?appid={api_key}&q=";
+    private String CURRENT_WEATHER_URL = "http://api.openweathermap.org/data/2.5/weather?units=imperial&appid={api_key}&q=";
     
     
     public WeatherResponse getWeather(String city) {
         
         String currentWeatherUrl = CURRENT_WEATHER_URL.replace("{api_key}", API_KEY) + city;
+        
+        System.out.println(currentWeatherUrl);
         
         RestTemplate restTemplate = new RestTemplate();
         WeatherResponse result = restTemplate.getForObject(currentWeatherUrl, WeatherResponse.class);
@@ -28,6 +30,8 @@ public class OpenWeatherGateway {
     
     public ForecastResponse getForecast(String city) {
         String forecastUrl = FORECAST_URL.replace("{api_key}", API_KEY) + city;
+        
+        System.out.println(forecastUrl);
         
         RestTemplate restTemplate = new RestTemplate();
         ForecastResponse result = restTemplate.getForObject(forecastUrl, ForecastResponse.class);

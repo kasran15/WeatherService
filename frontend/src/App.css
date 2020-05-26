@@ -78,3 +78,39 @@ html, body, #root {
 .Weather .right {
   padding-top: 40px;
 }
+
+.weather-card {
+  color: #eee;
+  max-width: 150px;
+}
+
+.weather-card .temp {
+  font-size: 36px;
+}
+
+.weather-card .temp .min-temp, .weather-card .temp .max-temp {
+  font-size: 12px;
+  flex: 0.5 0.5;
+}
+
+.weather-card .logo {
+  height: 50px;
+  width: 50px;
+}
+
+.weather-card .logo-container {
+  align-content: center;
+}
+
+.weather-card .main {
+  align-self: center;
+}
+
+.weather-info {
+  color: #eee;
+}
+
+.weather-info h2 {
+  text-align: left;
+  color: #A67DB8;
+}

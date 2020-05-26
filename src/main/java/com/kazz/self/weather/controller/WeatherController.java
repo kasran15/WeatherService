@@ -22,7 +22,7 @@ public class WeatherController {
         WeatherResponse weather = gateway.getWeather(city);
         ForecastResponse forecast = gateway.getForecast(city);
         
-        return AggregatedWeatherResponse.builder().forecastResponse(forecast).weatherResponse(weather).build();
+        return AggregatedWeatherResponse.builder().weather(weather).forecast(forecast).build();
     }
 
 }

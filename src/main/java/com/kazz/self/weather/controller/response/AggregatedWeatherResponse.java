@@ -12,7 +12,7 @@ import lombok.Setter;
 @Builder
 public class AggregatedWeatherResponse {
     
-    private WeatherResponse weatherResponse;
-    private ForecastResponse forecastResponse;
+    private WeatherResponse weather;
+    private ForecastResponse forecast;
   
 }
